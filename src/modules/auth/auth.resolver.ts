@@ -4,7 +4,7 @@ import { AuthProvider } from '@/enums/auth-provider.enum';
 
 @Resolver()
 export class AuthResolver {
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, { description: '로그인' })
   signIn(
     @Args({ name: 'provider', type: () => AuthProvider })
     provider: AuthProvider,
@@ -12,7 +12,7 @@ export class AuthResolver {
     return true;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, { description: '로그아웃' })
   signOut(): boolean {
     return true;
   }

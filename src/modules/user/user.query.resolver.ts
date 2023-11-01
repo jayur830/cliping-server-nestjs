@@ -58,7 +58,7 @@ export class UserQueryResolver {
     };
   }
 
-  @Query(() => FollowPagination)
+  @Query(() => FollowPagination, { description: '팔로잉 목록' })
   followingList(
     @Args({ name: 'limit', type: () => Int, nullable: true, defaultValue: 10 })
     limit: number = 10,
