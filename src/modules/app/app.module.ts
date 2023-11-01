@@ -1,7 +1,11 @@
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { HelloModule } from '@/modules/hello/hello.module';
+
+import { AuthModule } from '@/modules/auth/auth.module';
+import { PlaceModule } from '@/modules/place/place.module';
+import { ReviewModule } from '@/modules/review/review.module';
+import { UserModule } from '@/modules/user/user.module';
 
 @Module({
   imports: [
@@ -11,7 +15,10 @@ import { HelloModule } from '@/modules/hello/hello.module';
       driver: ApolloDriver,
       playground: true,
     }),
-    HelloModule,
+    AuthModule,
+    PlaceModule,
+    ReviewModule,
+    UserModule,
   ],
 })
 export class AppModule {}
