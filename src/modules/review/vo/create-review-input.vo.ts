@@ -2,7 +2,7 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 
 import { ReviewPlaceInput } from './review-place-input.vo';
 
-@InputType()
+@InputType({ description: '리뷰 정보 입력' })
 export class CreateReviewInput {
   @Field(() => String, { description: '리뷰 제목' })
   title: string;

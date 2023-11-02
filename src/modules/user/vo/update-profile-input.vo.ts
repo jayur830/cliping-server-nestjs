@@ -1,8 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 
-import { Profile } from './profile.vo';
-
-@InputType()
+@InputType({ description: '프로필 상세 정보 입력' })
 export class UpdateProfileInput {
   @Field(() => String, { description: '소개', nullable: true })
   description: string | null;
