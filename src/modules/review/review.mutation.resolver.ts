@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 
 import { CreateReviewInput } from './vo/create-review-input.vo';
 import { CreateReviewPayload } from './vo/create-review-payload.vo';
-import { ReviewGoodPayload } from './vo/place-good-payload.vo';
+import { ReviewLikePayload } from './vo/review-like-payload.vo';
 
 @Resolver()
 export class ReviewMutationResolver {
@@ -26,14 +26,14 @@ export class ReviewMutationResolver {
     };
   }
 
-  @Mutation(() => ReviewGoodPayload, { description: '리뷰 좋아요 누르기' })
-  Review_good(
+  @Mutation(() => ReviewLikePayload, { description: '리뷰 좋아요 누르기' })
+  Review_like(
     @Args({ name: 'id', type: () => Int }) id: number,
-    @Args({ name: 'good', type: () => Boolean }) good: boolean,
-  ): ReviewGoodPayload {
+    @Args({ name: 'like', type: () => Boolean }) like: boolean,
+  ): ReviewLikePayload {
     return {
       id,
-      good,
+      like,
     };
   }
 }

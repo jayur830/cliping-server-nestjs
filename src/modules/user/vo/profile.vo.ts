@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
-@ObjectType({ description: '프로필 상세 정보' })
+@ObjectType({ description: '프로필 상세' })
 export class Profile {
   @Field(() => String, { description: '소개', nullable: true })
   description: string | null;

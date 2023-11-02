@@ -24,7 +24,7 @@ export class Review {
   imageUrl: string;
 
   @Field(() => Int, { description: '좋아요 수' })
-  good: number;
+  like: number;
 
   @Field(() => Int, { description: '평점' })
   rating: number;

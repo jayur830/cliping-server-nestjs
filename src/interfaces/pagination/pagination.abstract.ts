@@ -1,6 +1,6 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Int, InterfaceType, ObjectType } from '@nestjs/graphql';
 
-@ObjectType()
+@InterfaceType()
 export abstract class Pagination<T> {
   @Field(() => Int, { description: 'limit' })
   limit: number;

@@ -1,17 +1,17 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
-import { PlaceGoodPayload } from './vo/place-good-payload.vo';
+import { PlaceLikePayload } from './vo/place-good-payload.vo';
 
 @Resolver()
 export class PlaceMutationResolver {
-  @Mutation(() => PlaceGoodPayload, { description: '장소 좋아요 누르기' })
-  Place_good(
+  @Mutation(() => PlaceLikePayload, { description: '장소 좋아요 누르기' })
+  Place_like(
     @Args({ name: 'placeId', type: () => String }) placeId: string,
-    @Args({ name: 'good', type: () => Boolean }) good: boolean,
+    @Args({ name: 'like', type: () => Boolean }) like: boolean,
   ) {
     return {
       placeId,
-      good,
+      like,
     };
   }
 }

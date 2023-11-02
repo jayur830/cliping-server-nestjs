@@ -2,7 +2,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { ReviewPlacePayload } from './review-place-payload.vo';
 
-@ObjectType()
+@ObjectType({ description: '리뷰 정보' })
 export class CreateReviewPayload {
   @Field(() => String, { description: '리뷰 제목' })
   title: string;

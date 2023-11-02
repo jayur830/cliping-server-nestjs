@@ -2,14 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type PlaceGoodPayload {
+"""장소 좋아요 정보"""
+type PlaceLikePayload {
   """장소 ID"""
   placeId: String!
 
   """좋아요"""
-  good: Boolean!
+  like: Boolean!
 }
 
+"""리뷰 장소 정보"""
 type ReviewPlacePayload {
   """장소 ID"""
   id: String!
@@ -21,6 +23,7 @@ type ReviewPlacePayload {
   address: String!
 }
 
+"""리뷰 정보"""
 type CreateReviewPayload {
   """리뷰 제목"""
   title: String!
@@ -41,12 +44,13 @@ type CreateReviewPayload {
   place: ReviewPlacePayload
 }
 
-type ReviewGoodPayload {
+"""리뷰 좋아요 정보"""
+type ReviewLikePayload {
   """리뷰 ID (PK)"""
   id: Int!
 
   """좋아요"""
-  good: Boolean!
+  like: Boolean!
 }
 
 """리뷰 작성 유저"""
@@ -79,7 +83,7 @@ type Review {
   imageUrl: String!
 
   """좋아요 수"""
-  good: Int!
+  like: Int!
 
   """평점"""
   rating: Int!
@@ -109,7 +113,7 @@ type ReviewPagination {
   list: [Review!]!
 }
 
-"""프로필 상세 정보"""
+"""프로필 상세"""
 type Profile {
   """소개"""
   description: String
@@ -127,6 +131,7 @@ type Profile {
   instagramUrl: String
 }
 
+"""프로필 상세 정보"""
 type UpdateProfilePayload {
   """소개"""
   description: String
@@ -212,7 +217,7 @@ type Me {
 
 type Query {
   """장소에 대한 좋아요 수"""
-  placeGoodCount(
+  placeLikeCount(
     """장소 ID"""
     placeId: String!
   ): Int!
@@ -243,9 +248,12 @@ type Query {
 
   """팔로워 목록"""
   followerList(limit: Int = 10, offset: Int = 0): FollowPagination!
+
+  """팔로잉 목록"""
   followingList(limit: Int = 10, offset: Int = 0): FollowPagination!
 }
 
+"""리뷰 검색 필터"""
 input ReviewFilter {
   """장소 ID (PK)"""
   placeId: String
@@ -255,17 +263,20 @@ input ReviewFilter {
 }
 
 type Mutation {
+  """로그인"""
   signIn(provider: AuthProvider!): Boolean!
+
+  """로그아웃"""
   signOut: Boolean!
 
   """장소 좋아요 누르기"""
-  Place_good(placeId: String!, good: Boolean!): PlaceGoodPayload!
+  Place_like(placeId: String!, like: Boolean!): PlaceLikePayload!
 
   """리뷰 등록"""
   Review_create(input: CreateReviewInput!): CreateReviewPayload!
 
   """리뷰 좋아요 누르기"""
-  Review_good(id: Int!, good: Boolean!): ReviewGoodPayload!
+  Review_like(id: Int!, like: Boolean!): ReviewLikePayload!
 
   """유저 팔로우"""
   User_follow(
@@ -292,6 +303,7 @@ enum AuthProvider {
   GOOGLE
 }
 
+"""리뷰 정보 입력"""
 input CreateReviewInput {
   """리뷰 제목"""
   title: String!
@@ -312,6 +324,7 @@ input CreateReviewInput {
   place: ReviewPlaceInput
 }
 
+"""리뷰 장소 정보 입력"""
 input ReviewPlaceInput {
   """장소 ID"""
   id: String!
@@ -323,6 +336,7 @@ input ReviewPlaceInput {
   address: String
 }
 
+"""프로필 상세 정보 입력"""
 input UpdateProfileInput {
   """소개"""
   description: String
