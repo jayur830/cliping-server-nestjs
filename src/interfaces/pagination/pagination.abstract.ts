@@ -1,4 +1,4 @@
-import { Field, Int, InterfaceType, ObjectType } from '@nestjs/graphql';
+import { Field, Int, InterfaceType } from '@nestjs/graphql';
 
 @InterfaceType()
 export abstract class Pagination<T> {

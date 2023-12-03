@@ -1,12 +1,15 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 
-@InputType({ description: '리뷰 정보 입력' })
-export class CreateReviewInput {
-  @Field(() => String, { description: '리뷰 제목' })
-  title: string;
+@InputType({ description: '리뷰 정보 수정' })
+export class UpdateReviewInput {
+  @Field(() => Int, { description: '리뷰 ID (PK)' })
+  id: number;
 
-  @Field(() => String, { description: '리뷰 내용' })
-  content: string;
+  @Field(() => String, { description: '리뷰 제목', nullable: true })
+  title: string | null;
+
+  @Field(() => String, { description: '리뷰 내용', nullable: true })
+  content: string | null;
 
   @Field(() => String, { description: '첨부 이미지', nullable: true })
   imageUrl: string | null;

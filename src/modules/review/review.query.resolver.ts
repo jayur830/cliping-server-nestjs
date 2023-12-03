@@ -38,15 +38,28 @@ export class ReviewQueryResolver {
       },
     })
     filter: ReviewFilter,
-  ): ReviewPagination {
+  ): Promise<ReviewPagination> {
     return this.reviewService.getReviewList(limit, offset, filter);
   }
 
-  @Query(() => Review, { description: '리뷰 조회' })
+  @Query(() => Review, {
+    description: `리뷰 조회
+
+- throw
+\`\`\`json
+// ID에 대한 리뷰가 없을 경우
+{
+  "message": "해당 ID의 리뷰가 존재하지 않습니다.",
+  "extensions": {
+    "code": "REVIEW_NOT_EXISTS"
+  }
+}
+\`\`\``,
+  })
   review(
     @Args({ name: 'id', type: () => Int, description: '리뷰 ID (PK)' })
     id: number,
-  ): Review {
+  ): Promise<Review> {
     return this.reviewService.getReview(id);
   }
 }
