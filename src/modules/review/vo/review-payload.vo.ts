@@ -1,9 +1,10 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
-import { ReviewPlacePayload } from './review-place-payload.vo';
-
 @ObjectType({ description: '리뷰 정보' })
-export class CreateReviewPayload {
+export class ReviewPayload {
+  @Field(() => Int, { description: '리뷰 ID (PK)' })
+  id: number;
+
   @Field(() => String, { description: '리뷰 제목' })
   title: string;
 
@@ -19,6 +20,6 @@ export class CreateReviewPayload {
   @Field(() => String, { description: '인스타그램 업로드 URL', nullable: true })
   instagramPostUrl: string | null;
 
-  @Field(() => ReviewPlacePayload, { description: '리뷰 장소', nullable: true })
-  place: ReviewPlacePayload | null;
+  @Field(() => String, { description: '리뷰 장소' })
+  placeId: string;
 }

@@ -4,10 +4,10 @@ import { Profile } from './profile.vo';
 
 @ObjectType({ description: '유저 상세 정보' })
 export class User {
-  @Field(() => Int, { description: '유저 ID (PK)' })
-  id: number;
+  @Field(() => String, { description: '유저 ID (PK)' })
+  id: string;
 
-  @Field(() => String, { description: '닉네임' })
+  @Field(() => String, { description: '닉네임', nullable: true })
   nickName: string;
 
   @Field(() => String, { description: '생성일자' })

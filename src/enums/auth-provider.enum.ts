@@ -4,6 +4,8 @@ export enum AuthProvider {
   KAKAO = 'KAKAO',
   NAVER = 'NAVER',
   GOOGLE = 'GOOGLE',
+  FACEBOOK = 'FACEBOOK',
+  APPLE = 'APPLE',
 }
 
 registerEnumType(AuthProvider, {
@@ -13,5 +15,7 @@ registerEnumType(AuthProvider, {
     KAKAO: { description: 'Kakao' },
     NAVER: { description: 'NAVER' },
     GOOGLE: { description: 'Google' },
+    FACEBOOK: { description: 'Facebook' },
+    APPLE: { description: 'Apple' },
   },
 });
