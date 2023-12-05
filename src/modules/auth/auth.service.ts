@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs';
 import { shuffle } from 'lodash';
+import { flattenDeep } from 'lodash';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import { DataSource, Repository } from 'typeorm';
 
@@ -39,52 +40,56 @@ export class AuthService {
       const auth = this.firebaseService.getAuth();
       const user = await this.firebaseService.verifyIdToken(authorization);
       const { customClaims } = await auth.getUserByEmail(user.email);
-      const provider = this.getProvider(user);
-      if (provider) {
-        await auth.setCustomUserClaims(user.uid, {
-          ...customClaims,
-          cliping: {
-            ...customClaims?.cliping,
-            provider: [
-              ...new Set<AuthProvider>([
-                ...(customClaims?.cliping?.provider || []),
-                provider,
-              ]),
-            ].sort(),
-          },
-        });
-      }
-      this.logger.debug(JSON.stringify(user, null, 2));
+      const provider = [
+        ...new Set<AuthProvider>([
+          ...flattenDeep<AuthProvider>(customClaims?.cliping?.provider || []),
+          ...flattenDeep(this.getProvider(user)),
+        ]),
+      ].sort();
+      await auth.setCustomUserClaims(user.uid, {
+        ...customClaims,
+        cliping: {
+          ...customClaims?.cliping,
+          provider,
+        },
+      });
 
       const repository = queryRunner.manager.withRepository(
         this.userRepository,
       );
       const count = await repository.countBy({ id: user.uid });
-      const input = user.cliping;
 
+      this.logger.debug(JSON.stringify(user, null, 2));
       if (count === 0) {
         const result = await repository.save({
-          ...input,
-          provider: (input.provider || []).join(','),
-          createdAt: input.created_at,
+          id: user.uid,
+          name: user.name,
+          email: user.email,
+          provider: provider.join(','),
+          createdAt: user.cliping?.created_at || dayjs().toDate(),
         });
         await queryRunner.commitTransaction();
-        return result;
+        return {
+          ...result,
+          provider: result.provider.split(','),
+        };
       } else {
         await repository
           .createQueryBuilder()
           .update()
           .set({
-            provider: [
-              ...new Set<string>([...(input.provider || []), provider]),
-            ]
-              .sort()
-              .join(','),
+            provider: provider.join(','),
           })
           .where('id = :id', { id: user.uid })
           .execute();
         await queryRunner.commitTransaction();
-        return input;
+        return {
+          id: user.uid,
+          name: user.name,
+          email: user.email,
+          provider,
+          createdAt: user.cliping?.created_at || dayjs().toDate(),
+        };
       }
     } catch (error) {
       this.logger.error(error);
@@ -122,11 +127,14 @@ export class AuthService {
 
       try {
         const user = await auth.getUserByEmail(data.kakao_account.email);
+        this.logger.log('Update kakao user.');
         const customClaims = {
           ...user?.customClaims?.cliping,
           provider: [
             ...new Set<AuthProvider>([
-              ...(user?.customClaims?.cliping?.provider || []),
+              ...flattenDeep<AuthProvider>(
+                user?.customClaims?.cliping?.provider || [],
+              ),
               AuthProvider.KAKAO,
             ]),
           ].sort(),
@@ -138,6 +146,7 @@ export class AuthService {
         const token = await auth.createCustomToken(user.uid, customClaims);
         return { token };
       } catch (error) {
+        this.logger.log('Create kakao user.');
         const uid = this.alphaNumeric(28);
         const properties = {
           displayName: data.properties.nickname,
@@ -213,15 +222,19 @@ export class AuthService {
 
       try {
         const user = await auth.getUserByEmail(data.response.email);
+        this.logger.log('Update naver user.');
         const customClaims = {
           ...user.customClaims?.cliping,
           provider: [
             ...new Set<AuthProvider>([
-              ...(user?.customClaims?.cliping?.provider || []),
+              ...flattenDeep<AuthProvider>(
+                user?.customClaims?.cliping?.provider || [],
+              ),
               AuthProvider.NAVER,
             ]),
           ].sort(),
         };
+        this.logger.debug(user?.customClaims);
         await auth.setCustomUserClaims(user.uid, {
           ...user.customClaims,
           cliping: customClaims,
@@ -229,6 +242,7 @@ export class AuthService {
         const token = await auth.createCustomToken(user.uid, customClaims);
         return { token };
       } catch {
+        this.logger.log('Create naver user.');
         const uid = this.alphaNumeric(28);
         const properties = {
           displayName: data.response.name,
@@ -261,20 +275,20 @@ export class AuthService {
     }
   }
 
-  private getProvider(user: DecodedIdToken): AuthProvider | null {
+  private getProvider(user: DecodedIdToken): AuthProvider[] {
     console.log('sign_in_provider:', user.firebase.sign_in_provider);
 
     switch (user.firebase.sign_in_provider) {
       case 'google.com':
-        return AuthProvider.GOOGLE;
+        return [AuthProvider.GOOGLE];
       case 'facebook.com':
-        return AuthProvider.FACEBOOK;
+        return [AuthProvider.FACEBOOK];
       case 'apple.com':
-        return AuthProvider.APPLE;
+        return [AuthProvider.APPLE];
       case 'custom':
-        return user.provider as AuthProvider;
+        return user.provider as AuthProvider[];
       default:
-        return null;
+        return [];
     }
   }
 
